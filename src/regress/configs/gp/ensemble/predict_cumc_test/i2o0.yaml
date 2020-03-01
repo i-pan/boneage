@@ -1,0 +1,111 @@
+# NOTE: it is best to use absolute paths
+# If you must use relative paths, they are relative
+# to run.py, not the config file
+
+seed: 88 
+
+dataset:
+  name: 'XrayDataset'
+  coords: False
+  params:
+  inner_fold: 2
+  outer_fold: 0
+  data_dir: '../../data/cumc/images/cropped/'
+  csv_filename: '../../data/cumc/train_with_splits.csv'
+
+
+transform:
+  augment: 'soft_augmentation'
+  probability: 1.0
+  num_workers: 0
+  pad_ratio: 1.28
+  resize_to: [512, 400]
+  preprocess:
+    image_range: [0, 255]
+    input_range: [0, 1]
+    mean: [0.202, 0.202, 0.202]
+    sdev: [0.193, 0.193, 0.193]
+
+
+model:
+  name: 'Regressor'
+  params:
+    backbone: 'densenet121'
+    dropout: 0.2
+    pretrained: 'imagenet'
+    final_bn: False
+
+
+find_lr: # this is its own mode 
+  params:
+    start_lr: 1.0e-7
+    end_lr: 1
+    num_iter: 250
+    save_fig: True
+
+
+train:
+  outer_only: False
+  batch_size: 16
+  trainer: 'Trainer'
+  params:
+    gradient_accumulation: 1
+    num_epochs: 100
+    steps_per_epoch: 0
+    validate_interval: 2
+    verbosity: 10
+
+
+evaluation:
+  evaluator: 'Evaluator'
+  params:
+    save_checkpoint_dir: '../../checkpoints/regress/gp/ensemble/i2o0/'
+    save_best: True
+    prefix: 'd121'
+    metrics: ['mae']
+    valid_metric: 'mae'
+    mode: 'min'
+    improve_thresh: 0.001
+    early_stopping: 10
+    patch: False
+
+
+loss:
+  name: 'HybridLoss'
+  params:
+
+
+optimizer:
+  name: 'AdamW'
+  params:
+    lr: 1.0e-4
+    weight_decay: 5.0e-4
+
+
+scheduler:
+  name: 'ReduceLROnPlateau'
+  params:
+    mode: 'min'
+    factor: 0.5
+    patience: 1
+    verbose: True
+    threshold: 0.001
+    threshold_mode: 'abs'
+    
+
+test:
+  checkpoint: '../../checkpoints/regress/gp/ensemble/i2o0/D121_019_VM-6.3878.PTH'
+  predictor: 'Predictor'
+  params:
+  save_preds_dir: '../../cv-predictions/regress/gp/ensemble/i2o0/'
+
+
+predict:
+  data_dir: '../../data/rsna/images/test/original/'
+  csv_filename: '../../data/rsna/test_with_coords.csv'
+  checkpoint: '../../checkpoints/regress/gp/ensemble/i2o0/D121_019_VM-6.3878.PTH'
+  predictor: 'Predictor'
+  params:
+  save_preds_dir: '../../test-predictions/regress/gp/ensemble/i2o0/'
+
+   

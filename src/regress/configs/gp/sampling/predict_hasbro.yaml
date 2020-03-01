@@ -1,0 +1,23 @@
+seed: 88
+
+
+dataset:
+  name: 'XrayDataset'
+  params:
+
+
+model_configs:
+  - 'configs/gp/sampling/i0o0.yaml'
+  - 'configs/gp/sampling/i1o0.yaml'
+  - 'configs/gp/sampling/i2o0.yaml'
+  - 'configs/gp/sampling/i3o0.yaml'
+
+
+predict:
+  batch_size: 8
+  csv_filename: '../../data/hasbro/manual_ratings.csv'
+  data_dir: '../../data/hasbro/images/trauma/'
+  save_preds_dir: '../../predictions/hasbro/regress/gp/sampling/'
+  coords: False
+
+

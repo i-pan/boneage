@@ -1,0 +1,16 @@
+seed: 88
+
+
+model_configs:
+  - 'configs/native/balanced/i0o0.yaml'
+  - 'configs/native/balanced/i1o0.yaml'
+  - 'configs/native/balanced/i2o0.yaml'
+  - 'configs/native/balanced/i3o0.yaml'
+
+
+predict:
+  batch_size: 8
+  csv_filename: '../../data/hasbro/manual_ratings.csv'
+  data_dir: '../../data/hasbro/images/trauma/'
+  save_preds_dir: '../../predictions/hasbro/regress/native/balanced/'
+  coords: False
